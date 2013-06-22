@@ -217,7 +217,7 @@ private:
     /*********************/
 
 public:
-    Pilot(string);
+    Pilot(char*);
     friend ostream& operator<<(ostream&, Pilot);
     WORD betoW(unsigned short);
     DWORD betoDW(unsigned short);
@@ -308,12 +308,12 @@ string Pilot::getmedal(BYTE ship)
     }
 }
 
-Pilot::Pilot(string filename)
+Pilot::Pilot(char* filename)
 {
     // create a zero-filled filebuffer, then read the file into it
     pilotfilebuffer.fill(0x0);
     char *readbuffer = new char;
-    ifstream pilotstream(filename.c_str(), ios::in|ios::binary);
+    ifstream pilotstream(filename, ios::in|ios::binary);
     if(pilotstream.is_open()) {
         for(int i=0; i < 3855 ; ++i) {
             pilotstream.read(readbuffer,1);
@@ -321,6 +321,7 @@ Pilot::Pilot(string filename)
         }
     }
     pilotstream.close();
+    delete readbuffer;
     
     // assign values from the buffer to member variables, convert WORD and DWORD values to lower endian.
     navyrank = pilotfilebuffer[2];
@@ -506,7 +507,6 @@ int main(int argc, char* argv[])
         cerr << "Please name a pilot file as parameter" << endl;
         return -1;
     }
-    string filename(argv[1]);
-    Pilot p(filename);
+    Pilot p(argv[1]);
     cout << p << endl;
 }
